@@ -79,11 +79,12 @@ TENANT_APPS = (
     'contrib',
 )
 
+INSTALLED_APPS = list(SHARED_APPS) + [app for app in TENANT_APPS if app not in SHARED_APPS]
+
 TENANT_MODEL = "tenantapp.Client"
 
 TENANT_DOMAIN_MODEL = "tenantapp.Domain"
 
-INSTALLED_APPS = list(SHARED_APPS) + [app for app in TENANT_APPS if app not in SHARED_APPS]
 MIDDLEWARE = [
     'django_tenants.middleware.main.TenantMainMiddleware',
     'django.middleware.security.SecurityMiddleware',

@@ -19,3 +19,11 @@ class Domain(DomainMixin):
 class PlanName(models.Model):
     plan_name = models.CharField(max_length=200)
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
+
+
+class CustomModel(models.Model):
+    name = models.CharField(max_length=255)
+
+    class Meta:
+        managed = True
+        db_table = 'permissions_custommodel'
