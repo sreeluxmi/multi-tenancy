@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.viewsets import ModelViewSet
+from django_tenants.utils import get_public_schema_name
 
 from .models import User
 from .serializers import UserSerializer, UserLoginSerializer
@@ -12,6 +13,15 @@ class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        if request.user.is_authenticated:
+            return Response({'message': 'User created successfully.'}, status=status.HTTP_201_CREATED)
+        else:
+            return Response({'error': 'Authentication required.'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 class UserLoginAPIView(viewsets.ModelViewSet):
@@ -41,3 +51,5 @@ class UserLoginAPIView(viewsets.ModelViewSet):
 
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
